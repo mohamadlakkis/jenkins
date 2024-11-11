@@ -13,7 +13,7 @@ pipeline {
                   if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
                       sh "python3 -m venv ${VIRTUAL_ENV}"
                   }
-                  sh ". ${VIRTUAL_ENV}/bin/activate && pip3 install -r requirements.txt"
+                  sh ". ${VIRTUAL_ENV}/bin/activate && /usr/bin/pip3 install -r requirements.txt"
               }
           }
       }
