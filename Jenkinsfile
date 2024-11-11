@@ -3,16 +3,19 @@ pipeline {
 
   environment {
       VIRTUAL_ENV = 'myenv'
-      PATH = "${env.WORKSPACE}/${VIRTUAL_ENV}/bin:${env.PATH}"
   }
 
   stages {
       stage('Setup') {
           steps {
               script {
-                  if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
-                      sh "python3 -m venv ${VIRTUAL_ENV}"
-                  }
+                  // Delete existing virtual environment if it exists, to avoid path issues
+                  sh "rm -rf ${VIRTUAL_ENV}"
+                  
+                  // Create a new virtual environment
+                  sh "python3 -m venv ${VIRTUAL_ENV}"
+                  
+                  // Install dependencies
                   sh "${VIRTUAL_ENV}/bin/pip install -r requirements.txt"
               }
           }
