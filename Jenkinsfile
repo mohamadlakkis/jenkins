@@ -4,7 +4,7 @@ pipeline {
   environment {
       VIRTUAL_ENV = 'myenv'
       PATH = "${env.WORKSPACE}/${VIRTUAL_ENV}/bin:${env.PATH}"
-      PYTHONPATH = "${env.WORKSPACE}" // Adds the root directory to PYTHONPATH
+      PYTHONPATH = "${env.WORKSPACE}"
   }
 
   stages {
@@ -16,6 +16,9 @@ pipeline {
                   
                   // Install dependencies
                   sh "${VIRTUAL_ENV}/bin/pip install -r requirements.txt"
+                  
+                  // Install coverage and bandit
+                  sh "${VIRTUAL_ENV}/bin/pip install coverage bandit"
               }
           }
       }
@@ -31,8 +34,39 @@ pipeline {
       stage('Test') {
           steps {
               script {
-                  // Run pytest
+                  // Run tests with pytest
                   sh "${VIRTUAL_ENV}/bin/pytest"
+              }
+          }
+      }
+
+      stage('Coverage') {
+          steps {
+              script {
+                  // Run coverage and generate a report
+                  sh "${VIRTUAL_ENV}/bin/coverage run -m pytest"
+                  sh "${VIRTUAL_ENV}/bin/coverage report"
+                  sh "${VIRTUAL_ENV}/bin/coverage html" // Generates an HTML report
+              }
+          }
+          post {
+              always {
+                  // Publish the HTML report
+                  publishHTML([allowMissing: false, 
+                               alwaysLinkToLastBuild: true, 
+                               keepAll: true, 
+                               reportDir: 'htmlcov', 
+                               reportFiles: 'index.html', 
+                               reportName: 'Coverage Report'])
+              }
+          }
+      }
+
+      stage('Security Scan') {
+          steps {
+              script {
+                  // Run bandit for security scanning
+                  sh "${VIRTUAL_ENV}/bin/bandit -r ."
               }
           }
       }
@@ -41,6 +75,9 @@ pipeline {
           steps {
               script {
                   echo "Deploying application..."
+                  // Example deployment command
+                  // This can be replaced with an actual deployment script or SSH command
+                  sh "echo 'Deploying to remote server or local environment'"
               }
           }
       }
