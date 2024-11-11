@@ -3,15 +3,14 @@ pipeline {
 
   environment {
       VIRTUAL_ENV = 'myenv'
+      PATH = "/usr/bin:${env.PATH}" // Ensures /usr/bin is included in PATH
   }
 
   stages {
       stage('Setup') {
           steps {
               script {
-                  // Delete existing virtual environment if it exists, to avoid path issues
-                  sh "rm -rf ${VIRTUAL_ENV}"
-                  
+                
                   // Create a new virtual environment
                   sh "python3 -m venv ${VIRTUAL_ENV}"
                   
