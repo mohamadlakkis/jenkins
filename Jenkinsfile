@@ -57,7 +57,7 @@ pipeline {
         stage('Security Scan') {
             steps {
                 script {
-                    sh "${VIRTUAL_ENV}/bin/bandit -r . --exclude myenv"
+                    sh "${VIRTUAL_ENV}/bin/bandit -r . --exclude ${VIRTUAL_ENV}"
                 }
             }
         }
