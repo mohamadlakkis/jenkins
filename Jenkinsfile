@@ -3,6 +3,7 @@ pipeline {
 
   environment {
       VIRTUAL_ENV = 'venv'
+      PATH = "/usr/bin/python3:${env.PATH}"
   }
 
   stages {
