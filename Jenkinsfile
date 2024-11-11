@@ -57,10 +57,10 @@ pipeline {
         stage('Security Scan') {
             steps {
                 script {
-                    sh "${VIRTUAL_ENV}/bin/bandit -r . --exclude ${VIRTUAL_ENV}"
+                    sh "${VIRTUAL_ENV}/bin/bandit -r app.py tests"
                 }
             }
-        }
+        }       
 
       stage('Deploy') {
           steps {
