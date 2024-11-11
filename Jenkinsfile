@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-      VIRTUAL_ENV = 'venv'
+      VIRTUAL_ENV = 'myenv'
       PATH = "/usr/bin/python3:${env.PATH}"
   }
 
