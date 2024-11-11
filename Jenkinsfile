@@ -3,16 +3,15 @@ pipeline {
 
   environment {
       VIRTUAL_ENV = 'myenv'
-      PATH = "/usr/bin:${env.PATH}" // Ensures /usr/bin is included in PATH
+      PATH = "/usr/bin:${env.PATH}"
   }
 
   stages {
       stage('Setup') {
           steps {
               script {
-                
-                  // Create a new virtual environment
-                  sh "python3 -m venv ${VIRTUAL_ENV}"
+                  // Create a new virtual environment using the absolute path for python3
+                  sh "/usr/bin/python3 -m venv ${VIRTUAL_ENV}"
                   
                   // Install dependencies
                   sh "${VIRTUAL_ENV}/bin/pip install -r requirements.txt"
