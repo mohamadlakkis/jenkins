@@ -3,14 +3,15 @@ pipeline {
 
   environment {
       VIRTUAL_ENV = 'myenv'
-      PATH = "/usr/bin:${env.PATH}"
+      PATH = "${env.WORKSPACE}/${VIRTUAL_ENV}/bin:${env.PATH}"
+      PYTHONPATH = "${env.WORKSPACE}" // Adds the root directory to PYTHONPATH
   }
 
   stages {
       stage('Setup') {
           steps {
               script {
-                  // Create a new virtual environment using the absolute path for python3
+                  // Create a new virtual environment
                   sh "/usr/bin/python3 -m venv ${VIRTUAL_ENV}"
                   
                   // Install dependencies
@@ -30,6 +31,7 @@ pipeline {
       stage('Test') {
           steps {
               script {
+                  // Run pytest
                   sh "${VIRTUAL_ENV}/bin/pytest"
               }
           }
@@ -38,7 +40,6 @@ pipeline {
       stage('Deploy') {
           steps {
               script {
-                  // Deployment logic, e.g., pushing to a remote server
                   echo "Deploying application..."
               }
           }
