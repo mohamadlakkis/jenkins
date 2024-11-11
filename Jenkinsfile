@@ -3,7 +3,7 @@ pipeline {
 
   environment {
       VIRTUAL_ENV = 'myenv'
-      PATH = "/usr/bin/python3:${env.PATH}"
+      PATH = "${env.WORKSPACE}/${VIRTUAL_ENV}/bin:${env.PATH}"
   }
 
   stages {
@@ -13,7 +13,7 @@ pipeline {
                   if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
                       sh "python3 -m venv ${VIRTUAL_ENV}"
                   }
-                  sh ". ${VIRTUAL_ENV}/bin/activate && /usr/bin/pip3 install -r requirements.txt"
+                  sh "${VIRTUAL_ENV}/bin/pip install -r requirements.txt"
               }
           }
       }
@@ -21,7 +21,7 @@ pipeline {
       stage('Lint') {
           steps {
               script {
-                  sh ". ${VIRTUAL_ENV}/bin/activate && flake8 app.py"
+                  sh "${VIRTUAL_ENV}/bin/flake8 app.py"
               }
           }
       }
@@ -29,7 +29,7 @@ pipeline {
       stage('Test') {
           steps {
               script {
-                  sh ". ${VIRTUAL_ENV}/bin/activate && pytest"
+                  sh "${VIRTUAL_ENV}/bin/pytest"
               }
           }
       }
