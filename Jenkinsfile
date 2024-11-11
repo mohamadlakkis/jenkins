@@ -11,13 +11,8 @@ pipeline {
       stage('Setup') {
           steps {
               script {
-                  // Create a new virtual environment
                   sh "/usr/bin/python3 -m venv ${VIRTUAL_ENV}"
-                  
-                  // Install dependencies
                   sh "${VIRTUAL_ENV}/bin/pip install -r requirements.txt"
-                  
-                  // Install coverage and bandit
                   sh "${VIRTUAL_ENV}/bin/pip install coverage bandit"
               }
           }
@@ -34,7 +29,6 @@ pipeline {
       stage('Test') {
           steps {
               script {
-                  // Run tests with pytest
                   sh "${VIRTUAL_ENV}/bin/pytest"
               }
           }
@@ -43,15 +37,13 @@ pipeline {
       stage('Coverage') {
           steps {
               script {
-                  // Run coverage and generate a report
                   sh "${VIRTUAL_ENV}/bin/coverage run -m pytest"
                   sh "${VIRTUAL_ENV}/bin/coverage report"
-                  sh "${VIRTUAL_ENV}/bin/coverage html" // Generates an HTML report
+                  sh "${VIRTUAL_ENV}/bin/coverage html" 
               }
           }
           post {
               always {
-                  // Publish the HTML report
                   publishHTML([allowMissing: false, 
                                alwaysLinkToLastBuild: true, 
                                keepAll: true, 
@@ -62,21 +54,18 @@ pipeline {
           }
       }
 
-      stage('Security Scan') {
-          steps {
-              script {
-                  // Run bandit for security scanning
-                  sh "${VIRTUAL_ENV}/bin/bandit -r ."
-              }
-          }
-      }
+        stage('Security Scan') {
+            steps {
+                script {
+                    sh "${VIRTUAL_ENV}/bin/bandit -r . --exclude myenv"
+                }
+            }
+        }
 
       stage('Deploy') {
           steps {
               script {
                   echo "Deploying application..."
-                  // Example deployment command
-                  // This can be replaced with an actual deployment script or SSH command
                   sh "echo 'Deploying to remote server or local environment'"
               }
           }
